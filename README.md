@@ -16,16 +16,20 @@ Proyecto académico. Aplicación web completa para una clínica veterinaria con 
 ## Inicio rápido
 
 ```bash
-# Instalar dependencias
+# 1. Instalar dependencias
 pnpm install
 
-# Aplicar migraciones y generar cliente Prisma
-pnpm prisma migrate dev
+# 2. Crear el archivo de variables de entorno
+cp .env.example .env.local
+# Luego edita .env.local y completa los valores (ver sección "Variables de entorno")
 
-# Poblar la base de datos con datos de prueba
+# 3. Aplicar migraciones y generar el cliente Prisma
+pnpm prisma migrate deploy
+
+# 4. Poblar la base de datos con datos de prueba
 pnpm db:seed
 
-# Iniciar servidor de desarrollo
+# 5. Iniciar servidor de desarrollo
 pnpm dev
 ```
 
@@ -68,7 +72,9 @@ prisma/
 
 ### Sitio público
 - Landing page con secciones: hero, servicios, reserva de cita, contacto
-- Chatbot con IA (configurable vía `.env.local`)
+- **Chatbot VetBot** (Google Gemini) — triaje de problemas de salud de mascotas y
+  agendamiento de citas directamente desde el chat
+- Formulario de reserva de cita que persiste en la base de datos
 - Modo oscuro persistente (Tailwind v4 + `localStorage`)
 - Autenticación con NextAuth v5
 
@@ -80,14 +86,19 @@ prisma/
 
 ## Variables de entorno
 
-Crea un archivo `.env.local` en la raíz:
+Copia `.env.example` a `.env.local` y completa los valores:
 
 ```env
+# Base de datos SQLite
 DATABASE_URL="file:./prisma/dev.db"
-AUTH_SECRET="tu_secreto_aqui"
 
-# Opcional — para el chatbot
-OPENAI_API_KEY=tu_clave
-# o
-GEMINI_API_KEY=tu_clave
+# Secreto de NextAuth v5 — genera uno con: openssl rand -base64 32
+AUTH_SECRET=
+
+# API key de Google Gemini para el chatbot VetBot
+# Obtén una gratis en https://aistudio.google.com/apikey
+GEMINI_API_KEY=
 ```
+
+El chatbot VetBot requiere `GEMINI_API_KEY` para funcionar. Sin ella, el
+endpoint `/api/chat` devolverá un error 500.
