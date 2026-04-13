@@ -12,31 +12,23 @@ const DarkModeContext = createContext<DarkModeContextValue>({
   toggle: () => {},
 })
 
+function readInitialDarkMode(): boolean {
+  if (typeof window === 'undefined') return false
+  const stored = localStorage.getItem('theme')
+  if (stored === 'dark') return true
+  if (stored === 'light') return false
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
 export function DarkModeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState<boolean>(readInitialDarkMode)
 
   useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    if (stored === 'dark' || (!stored && prefersDark)) {
-      setIsDark(true)
-      document.documentElement.classList.add('dark')
-    }
-  }, [])
+    document.documentElement.classList.toggle('dark', isDark)
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  }, [isDark])
 
-  const toggle = () => {
-    setIsDark((prev) => {
-      const next = !prev
-      if (next) {
-        document.documentElement.classList.add('dark')
-        localStorage.setItem('theme', 'dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-        localStorage.setItem('theme', 'light')
-      }
-      return next
-    })
-  }
+  const toggle = () => setIsDark((prev) => !prev)
 
   return (
     <DarkModeContext.Provider value={{ isDark, toggle }}>

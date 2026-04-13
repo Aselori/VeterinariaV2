@@ -14,7 +14,7 @@ async function main() {
   const adminPassword = await bcrypt.hash('admin123', 10)
   const userPassword = await bcrypt.hash('user123', 10)
 
-  const admin = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@vetclinic.com' },
     update: {},
     create: {
