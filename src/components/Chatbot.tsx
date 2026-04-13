@@ -6,11 +6,13 @@ import { useChat } from '@/hooks/useChat'
 export default function Chatbot() {
   const [input, setInput] = useState('')
   const { messages, isLoading, error, sendMessage, clearMessages } = useChat()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    const el = messagesContainerRef.current
+    if (!el) return
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+  }, [messages, isLoading])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,7 +59,10 @@ export default function Chatbot() {
           </div>
 
           {/* Messages */}
-          <div className="h-80 overflow-y-auto p-5 flex flex-col gap-3">
+          <div
+            ref={messagesContainerRef}
+            className="h-80 overflow-y-auto p-5 flex flex-col gap-3"
+          >
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-center gap-2">
                 <p className="text-2xl">🐾</p>
@@ -95,8 +100,6 @@ export default function Chatbot() {
             {error && (
               <p className="text-xs text-center text-red-400">{error}</p>
             )}
-
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}

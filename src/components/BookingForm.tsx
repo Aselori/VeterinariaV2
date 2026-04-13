@@ -19,8 +19,12 @@ const inputClass =
 
 const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5'
 
+type Status = 'idle' | 'loading' | 'success' | 'error'
+
 export default function BookingForm() {
   const [form, setForm] = useState<BookingFormData>(INITIAL_STATE)
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -28,10 +32,34 @@ export default function BookingForm() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Cita enviada:', form)
-    setForm(INITIAL_STATE)
+    setStatus('loading')
+    setErrorMsg(null)
+
+    const selectedService = SERVICES.find((s) => s.id === form.service)
+
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          service: selectedService?.title ?? form.service,
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data?.error ?? 'No se pudo crear la cita')
+      }
+
+      setStatus('success')
+      setForm(INITIAL_STATE)
+    } catch (err) {
+      setStatus('error')
+      setErrorMsg(err instanceof Error ? err.message : 'Error desconocido')
+    }
   }
 
   return (
@@ -165,10 +193,22 @@ export default function BookingForm() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-warm-200 text-gray-800 font-medium rounded-full hover:opacity-90 transition-opacity"
+              disabled={status === 'loading'}
+              className="w-full py-3 bg-warm-200 text-gray-800 font-medium rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              Reservar Cita
+              {status === 'loading' ? 'Enviando...' : 'Reservar Cita'}
             </button>
+
+            {status === 'success' && (
+              <p className="text-sm text-center text-green-600 dark:text-green-400">
+                ¡Cita registrada! Te contactaremos pronto para confirmar.
+              </p>
+            )}
+            {status === 'error' && (
+              <p className="text-sm text-center text-red-500 dark:text-red-400">
+                {errorMsg ?? 'No se pudo registrar la cita.'}
+              </p>
+            )}
           </form>
         </div>
       </div>

@@ -32,11 +32,9 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
 }
 
 section {
-  scroll-snap-align: start;
   scroll-margin-top: 4rem; /* account for sticky navbar (h-16 = 64px) */
 }
 

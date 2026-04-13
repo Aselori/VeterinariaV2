@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 const inputClass =
@@ -34,9 +34,7 @@ export default function LoginForm() {
       return
     }
 
-    // Fetch session to get role for redirect
-    const res = await fetch('/api/auth/session')
-    const session = await res.json()
+    const session = await getSession()
 
     if (session?.user?.role === 'ADMIN') {
       router.push('/admin')
