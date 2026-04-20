@@ -15,8 +15,12 @@ const inputClass =
 
 const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5'
 
+type Status = 'idle' | 'sending' | 'success' | 'error'
+
 export default function ContactForm() {
   const [form, setForm] = useState<ContactFormData>(INITIAL_STATE)
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -24,10 +28,26 @@ export default function ContactForm() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Mensaje enviado:', form)
-    setForm(INITIAL_STATE)
+    setStatus('sending')
+    setErrorMsg(null)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.error ?? 'No se pudo enviar el mensaje')
+      }
+      setForm(INITIAL_STATE)
+      setStatus('success')
+    } catch (err) {
+      setStatus('error')
+      setErrorMsg(err instanceof Error ? err.message : 'Error desconocido')
+    }
   }
 
   return (
@@ -109,10 +129,22 @@ export default function ContactForm() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-warm-200 text-gray-800 font-medium rounded-full hover:opacity-90 transition-opacity"
+              disabled={status === 'sending'}
+              className="w-full py-3 bg-warm-200 text-gray-800 font-medium rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              Enviar Mensaje
+              {status === 'sending' ? 'Enviando...' : 'Enviar Mensaje'}
             </button>
+
+            {status === 'success' && (
+              <p className="text-sm text-center text-green-600 dark:text-green-400">
+                ¡Mensaje enviado! Te responderemos pronto.
+              </p>
+            )}
+            {status === 'error' && (
+              <p className="text-sm text-center text-red-500">
+                {errorMsg ?? 'Ocurrió un error al enviar.'}
+              </p>
+            )}
           </form>
         </div>
       </div>

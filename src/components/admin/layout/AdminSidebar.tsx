@@ -8,6 +8,7 @@ import DarkModeToggle from '@/components/DarkModeToggle'
 const navLinks = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/citas', label: 'Citas' },
+  { href: '/admin/mensajes', label: 'Mensajes' },
   { href: '/admin/usuarios', label: 'Usuarios' },
 ]
 
