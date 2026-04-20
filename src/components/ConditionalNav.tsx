@@ -7,8 +7,9 @@ import Footer from '@/components/Footer'
 export default function ConditionalNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isAdmin = pathname?.startsWith('/admin')
+  const isAuth = pathname?.startsWith('/login')
 
-  if (isAdmin) return <>{children}</>
+  if (isAdmin || isAuth) return <>{children}</>
 
   return (
     <>
