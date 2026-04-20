@@ -1,22 +1,22 @@
-import Image from 'next/image'
+import Chatbot from './Chatbot'
 
 export default function Hero() {
   return (
     <section
       id="home"
-      className="relative bg-warm-50 dark:bg-slate-900 py-24 md:py-36 overflow-hidden"
+      className="relative bg-warm-50 dark:bg-slate-900 pt-8 pb-16 md:pt-12 md:pb-24 overflow-hidden"
     >
       <div className="relative max-w-6xl mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center gap-12">
-        {/* Text */}
+        {/* Text + CTAs */}
         <div className="flex-1">
           <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
             Clínica Veterinaria
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-800 dark:text-gray-100 max-w-2xl leading-tight mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-gray-800 dark:text-gray-100 max-w-xl leading-tight mb-6">
             Cuidando a tus Mascotas con Amor
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed mb-10">
-            Servicios veterinarios profesionales en los que puedes confiar. Porque tus mascotas merecen lo mejor.
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-md leading-relaxed mb-10">
+            Habla con nuestro asistente IA para resolver dudas o agendar una cita al instante.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
@@ -34,17 +34,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Image */}
-        <div className="flex-1 w-full max-w-md md:max-w-none">
-          <div className="relative rounded-3xl overflow-hidden shadow-lg aspect-[4/3]">
-            <Image
-              src="/hero-dog.jpg"
-              alt="Cachorro recibiendo atención veterinaria"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+        {/* Chatbot */}
+        <div className="flex-1 w-full max-w-xl">
+          <Chatbot />
         </div>
       </div>
     </section>

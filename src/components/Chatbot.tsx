@@ -22,23 +22,7 @@ export default function Chatbot() {
   }
 
   return (
-    <section id="chat" className="bg-warm-100 dark:bg-slate-800 py-16 md:py-24">
-      <div className="max-w-6xl mx-auto px-6 md:px-8">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">
-            Asistente IA
-          </p>
-          <h2 className="text-3xl md:text-4xl font-semibold text-gray-800 dark:text-gray-100 mb-3">
-            Chatea con Nosotros
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-sm leading-relaxed">
-            ¿Tienes una pregunta sobre tu mascota? Nuestro asistente IA está disponible en cualquier momento.
-          </p>
-        </div>
-
-        {/* Chat card */}
-        <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-2xl border border-warm-100 dark:border-slate-700 shadow-sm overflow-hidden">
+    <div id="chat" className="w-full bg-white dark:bg-slate-900 rounded-2xl border border-warm-100 dark:border-slate-700 shadow-sm overflow-hidden">
           {/* Card header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-warm-100 dark:border-slate-700 bg-warm-50 dark:bg-slate-800">
             <div className="flex items-center gap-3">
@@ -122,7 +106,5 @@ export default function Chatbot() {
             </form>
           </div>
         </div>
-      </div>
-    </section>
   )
 }
